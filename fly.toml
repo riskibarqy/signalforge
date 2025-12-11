@@ -1,0 +1,16 @@
+app = 'signalforge-late-fire-4638'
+primary_region = 'sin'
+
+[build]
+  builder = 'paketobuildpacks/builder-jammy-base'
+
+[processes]
+  app = 'signalforge -mode daily'
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory = "256mb"
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
