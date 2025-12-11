@@ -57,7 +57,7 @@ func (c Client) Summarize(ctx context.Context, prompt string) (string, error) {
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.APIKey))
-	req.Header.Set("User-Agent", "currency-report/0.1")
+	req.Header.Set("User-Agent", "signalforge/0.1")
 
 	client := c.Client
 	if client == nil {

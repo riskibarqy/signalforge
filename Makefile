@@ -21,7 +21,7 @@ fmt:
 
 fly-init:
 	@if [ ! -f fly.toml ]; then echo 'Creating minimal fly.toml'; \
-	echo '[build]\n  builder = "paketobuildpacks/builder-jammy-base"\n\n[processes]\n  app = "currency-report -mode daily"\n' > fly.toml; \
+	echo '[build]\n  builder = "paketobuildpacks/builder-jammy-base"\n\n[processes]\n  app = "signalforge -mode daily"\n' > fly.toml; \
 	else echo 'fly.toml already exists'; fi
 
 fly-deploy:

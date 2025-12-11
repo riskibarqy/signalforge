@@ -5,8 +5,8 @@ import (
 	"math"
 	"strings"
 
-	"currency-report/internal/config"
-	"currency-report/internal/prices"
+	"github.com/riskibarqy/signalforge/internal/config"
+	"github.com/riskibarqy/signalforge/internal/prices"
 )
 
 type Report struct {

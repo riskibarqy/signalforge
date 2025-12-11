@@ -28,7 +28,7 @@ func (f Fetcher) FetchGold(ctx context.Context) (Quote, error) {
 	if err != nil {
 		return Quote{}, err
 	}
-	req.Header.Set("User-Agent", "currency-report/0.1")
+	req.Header.Set("User-Agent", "signalforge/0.1")
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -66,7 +66,7 @@ func (f Fetcher) FetchBTC(ctx context.Context) (Quote, error) {
 	if err != nil {
 		return Quote{}, err
 	}
-	req.Header.Set("User-Agent", "currency-report/0.1")
+	req.Header.Set("User-Agent", "signalforge/0.1")
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -117,7 +117,7 @@ func (f Fetcher) FetchXiit(ctx context.Context, ticker string) (Quote, error) {
 	if err != nil {
 		return Quote{}, err
 	}
-	req.Header.Set("User-Agent", "currency-report/0.1")
+	req.Header.Set("User-Agent", "signalforge/0.1")
 
 	resp, err := client.Do(req)
 	if err != nil {

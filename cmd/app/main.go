@@ -9,11 +9,11 @@ import (
 	"os"
 	"time"
 
-	"currency-report/internal/ai"
-	"currency-report/internal/config"
-	"currency-report/internal/email"
-	"currency-report/internal/prices"
-	"currency-report/internal/workflow"
+	"github.com/riskibarqy/signalforge/internal/ai"
+	"github.com/riskibarqy/signalforge/internal/config"
+	"github.com/riskibarqy/signalforge/internal/email"
+	"github.com/riskibarqy/signalforge/internal/prices"
+	"github.com/riskibarqy/signalforge/internal/workflow"
 )
 
 func main() {

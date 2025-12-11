@@ -1,6 +1,6 @@
 # Investment Autopilot
 
-Go utility that pulls prices for gold, BTC, and XIIT, applies your DCA/rebalance rules, optionally asks an OpenAI-compatible model for a short briefing, and emails the result.
+Go utility that pulls prices for gold, BTC, and XIIT, applies your DCA/rebalance rules, optionally asks an OpenAI-compatible model for a short briefing, and emails the result. Module path: `github.com/riskibarqy/signalforge`.
 
 ## Data sources
 - Gold: metals.live spot endpoint (USD)
@@ -35,7 +35,7 @@ go run ./cmd/app -mode rebalance -gold_value 12000000 -btc_value 6000000 -stock_
   builder = "paketobuildpacks/builder-jammy-base"
 
 [processes]
-  app = "currency-report -mode daily"
+  app = "signalforge -mode daily"
 ```
 2) Set secrets: `fly secrets set SMTP_HOST=... SMTP_PORT=587 SMTP_USER=... SMTP_PASS=... SMTP_FROM=... SMTP_TO=... OPENAI_API_KEY=...`
 3) Deploy: `fly deploy`
