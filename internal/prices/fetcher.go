@@ -19,16 +19,23 @@ type Quote struct {
 }
 
 type Fetcher struct {
-	Client *http.Client
+	Client       *http.Client
+	GoldAPIToken string
 }
 
 func (f Fetcher) FetchGold(ctx context.Context) (Quote, error) {
 	client := f.httpClient()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://api.metals.live/v1/spot/gold", nil)
+	if f.GoldAPIToken == "" {
+		return Quote{}, errors.New("gold api token missing")
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://www.goldapi.io/api/XAU/IDR", nil)
 	if err != nil {
 		return Quote{}, err
 	}
 	req.Header.Set("User-Agent", "signalforge/0.1")
+	req.Header.Set("x-access-token", f.GoldAPIToken)
+	req.Header.Set("accept", "application/json")
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -39,22 +46,26 @@ func (f Fetcher) FetchGold(ctx context.Context) (Quote, error) {
 		return Quote{}, fmt.Errorf("gold api status %d", resp.StatusCode)
 	}
 
-	var payload []interface{}
+	var payload goldAPIResponse
 	if err := json.NewDecoder(resp.Body).Decode(&payload); err != nil {
 		return Quote{}, err
 	}
 
-	price, err := extractNumber(payload)
-	if err != nil {
-		return Quote{}, fmt.Errorf("gold price unavailable: %w", err)
+	if payload.Price <= 0 {
+		return Quote{}, errors.New("gold price unavailable")
+	}
+
+	high := payload.HighPrice
+	if high < payload.Price {
+		high = payload.Price
 	}
 
 	return Quote{
-		Symbol:      "XAU",
-		Price:       price,
-		High30:      price,
-		Currency:    "USD",
-		Source:      "metals.live",
+		Symbol:      payload.Metal,
+		Price:       payload.Price,
+		High30:      high,
+		Currency:    payload.Currency,
+		Source:      "goldapi.io",
 		RetrievedAt: time.Now(),
 	}, nil
 }
@@ -171,28 +182,14 @@ func (f Fetcher) httpClient() *http.Client {
 	return &http.Client{Timeout: 12 * time.Second}
 }
 
-func extractNumber(payload []interface{}) (float64, error) {
-	for _, entry := range payload {
-		switch v := entry.(type) {
-		case float64:
-			if v > 0 {
-				return v, nil
-			}
-		case []interface{}:
-			for _, inner := range v {
-				if f, ok := inner.(float64); ok && f > 0 {
-					return f, nil
-				}
-			}
-		case map[string]interface{}:
-			for _, inner := range v {
-				if f, ok := inner.(float64); ok && f > 0 {
-					return f, nil
-				}
-			}
-		}
-	}
-	return 0, errors.New("no numeric value found")
+type goldAPIResponse struct {
+	Timestamp int64   `json:"timestamp"`
+	Metal     string  `json:"metal"`
+	Currency  string  `json:"currency"`
+	Symbol    string  `json:"symbol"`
+	Price     float64 `json:"price"`
+	HighPrice float64 `json:"high_price"`
+	LowPrice  float64 `json:"low_price"`
 }
 
 type yahooChartResponse struct {

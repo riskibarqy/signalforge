@@ -37,7 +37,10 @@ func main() {
 	}
 
 	httpClient := &http.Client{Timeout: 15 * time.Second}
-	fetcher := prices.Fetcher{Client: httpClient}
+	fetcher := prices.Fetcher{
+		Client:       httpClient,
+		GoldAPIToken: settings.GoldAPIToken,
+	}
 
 	var report workflow.Report
 	var err error

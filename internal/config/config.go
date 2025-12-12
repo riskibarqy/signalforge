@@ -33,6 +33,8 @@ type Settings struct {
 	BtcValueNow   float64
 	StockValueNow float64
 
+	GoldAPIToken string
+
 	SMTPHost string
 	SMTPPort int
 	SMTPUser string
@@ -102,6 +104,8 @@ func Load() Settings {
 	if v := os.Getenv("SMTP_TO"); v != "" {
 		s.SMTPTo = splitAndTrim(v)
 	}
+
+	readString("GOLD_API_TOKEN", &s.GoldAPIToken)
 
 	readString("OPENAI_API_KEY", &s.OpenAIKey)
 	readString("OPENAI_BASE_URL", &s.OpenAIBaseURL)

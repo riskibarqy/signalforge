@@ -6,7 +6,7 @@ SHELL := /bin/sh
 GO_RUN=GO111MODULE=on go run ./cmd/app
 FLY_APP ?= signalforge-late-fire-4638
 ENV_FILE ?= $(abspath .env)
-FLY_SECRET_VARS=SMTP_HOST SMTP_PORT SMTP_USER SMTP_PASS SMTP_FROM SMTP_TO OPENAI_API_KEY
+FLY_SECRET_VARS=SMTP_HOST SMTP_PORT SMTP_USER SMTP_PASS SMTP_FROM SMTP_TO GOLD_API_TOKEN OPENAI_API_KEY
 
 .PHONY: daily dca rebalance test fmt fly-init fly-deploy fly-secrets
 

@@ -9,6 +9,9 @@ primary_region = 'sin'
 
 [processes]
   app = 'signalforge -mode daily'
+  daily = 'signalforge -mode daily'
+  rebalance = 'signalforge -mode rebalance'
+  dca = 'signalforge -mode dca'
 
 [[vm]]
   cpu_kind = "shared"
