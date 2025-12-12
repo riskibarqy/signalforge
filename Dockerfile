@@ -1,20 +1,34 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1.6
 
-FROM golang:1.22 AS build
+########## 1) Builder stage ##########
+FROM golang:latest AS build
+# or: FROM golang:alpine AS build
+
 WORKDIR /app
 
-# Go module deps (cached)
-COPY go.mod go.sum ./
-RUN go mod download
+# Build-time environment
+ENV CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64 \
+    GO111MODULE=on
 
-# Source
+# 1. Cache modules (fast!)
+COPY go.mod go.sum ./
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod download
+
+# 2. Copy source
 COPY . .
 
-# Build static-ish binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /signalforge ./cmd/app
+# 3. Build optimized binary with cached build folders
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go build -trimpath -ldflags="-s -w" -o /signalforge ./cmd/app
 
-# Minimal runtime with certs and nonroot user
+########## 2) Runtime stage ##########
 FROM gcr.io/distroless/base-debian12:nonroot
+
 COPY --from=build /signalforge /signalforge
+
 ENTRYPOINT ["/signalforge"]
 CMD ["-mode", "daily"]
