@@ -3,7 +3,7 @@
 Go utility that pulls prices for gold, BTC, and XIIT, applies your DCA/rebalance rules, optionally asks an OpenAI-compatible model for a short briefing, and emails the result. Module path: `github.com/riskibarqy/signalforge`.
 
 ## Data sources
-- Gold: goldapi.io XAU/IDR (token required)
+- Gold: goldapi.io XAU/USD (token required) + exchangerate.host for USD→IDR
 - BTC (IDR) & 30d high: CoinGecko market_chart
 - XIIT ETF (IDR) & 30d high: Yahoo Finance chart (`XIIT.JK` by default, override with `XIIT_TICKER`)
 
