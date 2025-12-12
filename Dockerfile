@@ -1,8 +1,7 @@
 # syntax=docker/dockerfile:1.6
 
 ########## 1) Builder stage ##########
-FROM golang:latest AS build
-# or: FROM golang:alpine AS build
+FROM golang:alpine AS build
 
 WORKDIR /app
 
