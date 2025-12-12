@@ -35,15 +35,13 @@ go run ./cmd/app -mode rebalance -gold_value 12000000 -btc_value 6000000 -stock_
   dockerfile = "Dockerfile"
 
 [processes]
-  daily = "/signalforge -mode daily"
-  rebalance = "/signalforge -mode rebalance"
-  dca = "/signalforge -mode dca"
+  app = "-mode daily" # ENTRYPOINT is /signalforge
 ```
 2) Set secrets: `fly secrets set SMTP_HOST=... SMTP_PORT=587 SMTP_USER=... SMTP_PASS=... SMTP_FROM=... SMTP_TO=... GOLD_API_TOKEN=... OPENAI_API_KEY=...`
 3) Deploy: `PACK_VOLUME_KEY=signalforge-cache fly deploy` (env var optional but speeds rebuilds).
 4) Schedule with Fly cron/Machines, e.g.:
-   - Daily 01:00 UTC (08:00 WIB): `fly m run -a <app> --config fly.toml --process daily --schedule "cron:0 1 * * *"`
-   - Monthly 01:00 UTC on the 1st: `fly m run -a <app> --config fly.toml --process rebalance --schedule "cron:0 1 1 * *"`
+   - Daily 01:00 UTC (08:00 WIB): `fly m run -a <app> --config fly.toml --schedule "cron:0 1 * * *" -- -mode daily`
+   - Monthly 01:00 UTC on the 1st: `fly m run -a <app> --config fly.toml --schedule "cron:0 1 1 * *" -- -mode rebalance`
 
 ## Notes
 - AI is optional; if the key is missing the report still runs.
