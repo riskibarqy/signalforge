@@ -29,17 +29,21 @@ go run ./cmd/app -mode rebalance -gold_value 12000000 -btc_value 6000000 -stock_
 ```
 
 ## Fly.io deployment (outline)
-1) Create `fly.toml` for a simple worker (no HTTP). Example:
+1) Uses the included `Dockerfile` (Go build -> distroless) and `fly.toml` with worker processes:
 ```toml
 [build]
-  builder = "paketobuildpacks/builder-jammy-base"
+  dockerfile = "Dockerfile"
 
 [processes]
-  app = "signalforge -mode daily"
+  daily = "/signalforge -mode daily"
+  rebalance = "/signalforge -mode rebalance"
+  dca = "/signalforge -mode dca"
 ```
 2) Set secrets: `fly secrets set SMTP_HOST=... SMTP_PORT=587 SMTP_USER=... SMTP_PASS=... SMTP_FROM=... SMTP_TO=... GOLD_API_TOKEN=... OPENAI_API_KEY=...`
-3) Deploy: `fly deploy`
-4) Schedule with Fly cron (e.g., via `fly m run` + external scheduler) or wrap in a small cron container. For multiple schedules (daily signals, monthly DCA, monthly rebalance) create separate processes or commands.
+3) Deploy: `PACK_VOLUME_KEY=signalforge-cache fly deploy` (env var optional but speeds rebuilds).
+4) Schedule with Fly cron/Machines, e.g.:
+   - Daily 01:00 UTC (08:00 WIB): `fly m run -a <app> --config fly.toml --process daily --schedule "cron:0 1 * * *"`
+   - Monthly 01:00 UTC on the 1st: `fly m run -a <app> --config fly.toml --process rebalance --schedule "cron:0 1 1 * *"`
 
 ## Notes
 - AI is optional; if the key is missing the report still runs.

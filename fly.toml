@@ -2,16 +2,13 @@ app = 'signalforge-late-fire-4638'
 primary_region = 'sin'
 
 [build]
-  builder = 'paketobuildpacks/builder-jammy-base'
-  [build.env]
-    BP_GO_TARGETS = "./cmd/app"
-    BP_GO_BINARY_NAME = "signalforge"
+  dockerfile = 'Dockerfile'
 
 [processes]
-  app = './bin/signalforge -mode daily'
-  daily = './bin/signalforge -mode daily'
-  rebalance = './bin/signalforge -mode rebalance'
-  dca = './bin/signalforge -mode dca'
+  app = '/signalforge -mode daily'
+  daily = '/signalforge -mode daily'
+  rebalance = '/signalforge -mode rebalance'
+  dca = '/signalforge -mode dca'
 
 [[vm]]
   cpu_kind = "shared"
